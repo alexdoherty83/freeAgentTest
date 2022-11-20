@@ -5,14 +5,16 @@ import com.freeagent.testapp.data.model.FxModel
 import com.freeagent.testapp.data.model.SymbolsModel
 import com.freeagent.testapp.utils.HelpfulUtils
 import okhttp3.Cache
+import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
-import retrofit2.http.Path
 import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
+
 
 open class FixerIoRetrofitApi(
     protected open val API_KEY: String,
@@ -39,10 +41,22 @@ open class FixerIoRetrofitApi(
             .cache(getCache(context))
             .addInterceptor { chain ->
                 var request = chain.request()
+
+                val cacheControl = CacheControl.Builder()
+                    .onlyIfCached()
+                    .maxStale(1, TimeUnit.DAYS)
+                    .build()
+
                 request = if (HelpfulUtils.hasNetwork(context) == true)
-                    request.newBuilder().header("Cache-Control", "public, max-age=" + 5).build()
+                    request.newBuilder()
+                        .header("Cache-Control", "public, max-age=" + 5)
+                        //.cacheControl(cacheControl)
+                        .build()
                 else
-                    request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build()
+                    request.newBuilder()
+                        .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7)
+                        //.cacheControl(cacheControl)
+                        .build()
                 chain.proceed(request)
             }
             .build()

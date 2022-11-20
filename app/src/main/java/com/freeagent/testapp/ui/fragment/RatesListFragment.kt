@@ -2,26 +2,29 @@ package com.freeagent.testapp.ui.fragment
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.TextUtils
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.freeagent.testapp.R
 import com.freeagent.testapp.data.model.FxModel
-import com.freeagent.testapp.data.model.SymbolsModel
 import com.freeagent.testapp.databinding.FragmentRatesListBinding
 import com.freeagent.testapp.ui.adapter.RatesListAdapter
 import com.freeagent.testapp.ui.viewmodel.FxViewModel
 import com.freeagent.testapp.ui.widget.VerticalSpaceItemDecoration
-import java.util.*
-import kotlin.collections.ArrayList
 
 open class RatesListFragment : Fragment() {
 
+    protected open var mFxModel: FxModel? = null
     protected open val binding by lazy { FragmentRatesListBinding.inflate(layoutInflater) }
     protected open var mRatesListAdapter: RatesListAdapter? = null
     protected open val fxViewModel by activityViewModels<FxViewModel>()
@@ -40,10 +43,25 @@ open class RatesListFragment : Fragment() {
             loadDefaults()
             setupAdapter()
             setupSpinner()
+            setupAmountInput()
             setupRecyclerView()
             setupViewModel()
         } catch (e: Throwable) {
             e.printStackTrace()
+        }
+    }
+
+    protected open fun setupAmountInput() {
+        binding.amountInputField.setOnEditorActionListener { textView, actionId, p2 ->
+            try {// make sure this matches what was set for imeAction in the layout!
+                if (actionId == EditorInfo.IME_ACTION_GO) {
+                    if (!TextUtils.isEmpty(textView.text))
+                    obtainLatestRates()
+                }
+            } catch (e: Throwable) {
+                e.printStackTrace()
+            }
+            false
         }
     }
 
@@ -61,6 +79,26 @@ open class RatesListFragment : Fragment() {
                 binding.selectedCurrencyLabel.post {
                     binding.selectedCurrencyLabel.adapter = spinnerAdapter
                     binding.selectedCurrencyLabel.setSelection(sortedList.indexOf(defaultCurrency))
+                    binding.selectedCurrencyLabel.onItemSelectedListener =
+                        object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                p0: AdapterView<*>?,
+                                p1: View?,
+                                position: Int,
+                                p3: Long
+                            ) {
+                                try {
+                                    defaultCurrency = spinnerAdapter?.getItem(position)
+                                    obtainedFxRates(mFxModel)
+                                } catch (e: Throwable) {
+                                    e.printStackTrace()
+                                }
+                            }
+
+                            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                            }
+                        }
                 }
             }
         } catch (e: Throwable) {
@@ -80,13 +118,8 @@ open class RatesListFragment : Fragment() {
     protected open fun setupViewModel() {
 
         try {
-            showLoading()
-            obtainLatestRates()
-            /*fxViewModel.getSymbols(success = {
-                obtainedSymbols(it)
-            }, failure = {
-                failedToObtainSymbols()
-            })*/
+            //showLoading()
+            //obtainLatestRates()
 
         } catch (e: Throwable) {
             e.printStackTrace()
@@ -94,44 +127,14 @@ open class RatesListFragment : Fragment() {
     }
 
     protected open fun obtainLatestRates() {
-        defaultCurrency?.let { currency ->
-            fxViewModel.getLatestFxRates(defaultCurrency = currency, success = {
-                obtainedFxRates(it)
-            }) {
-                failedToObtainModel()
-            }
-        }
-    }
-
-    protected open fun obtainedSymbols(symbolsModel: SymbolsModel?) {
         try {
-
-            if (symbolsModel != null) {
-                if (symbolsModel.symbols != null && symbolsModel.symbols.size > 0) {
-
-                    val from = ArrayList<String>(symbolsModel.symbols.keys)
-                    val spinnerAdapter = context?.let {
-                        ArrayAdapter(
-                            it,
-                            android.R.layout.simple_spinner_item,
-                            from
-                        )
-                    }
-                    binding.selectedCurrencyLabel.post {
-                        binding.selectedCurrencyLabel.adapter = spinnerAdapter
-                        binding.selectedCurrencyLabel.setSelection(from.indexOf(defaultCurrency))
-                    }
+            defaultCurrency?.let { currency ->
+                fxViewModel.getLatestFxRates(defaultCurrency = currency, success = {
+                    obtainedFxRates(it)
+                }) {
+                    failedToObtainModel()
                 }
             }
-
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-    }
-
-    protected open fun failedToObtainSymbols() {
-        try {
-            hideLoading()
         } catch (e: Throwable) {
             e.printStackTrace()
         }
@@ -141,15 +144,20 @@ open class RatesListFragment : Fragment() {
     protected open fun obtainedFxRates(model: FxModel?) {
         try {
 
-            mRatesListAdapter?.mList = model?.rates?.filter { victim ->
-                selectedCurrencies?.contains(victim.key) == true && victim.key != defaultCurrency
-            }
-            binding.ratesListRecycler.post {
-                // yes google, i know it's better to notify one item
-                // instead of all of them, but i'm changing
-                // more than one item at this time
-                mRatesListAdapter?.notifyDataSetChanged()
-                hideLoading()
+            hideLoading()
+
+            mFxModel = model
+            if (!TextUtils.isEmpty(binding.amountInputField.text)) {
+                mRatesListAdapter?.mList = model?.rates?.filter { victim ->
+                    selectedCurrencies?.contains(victim.key) == true && victim.key != defaultCurrency
+                }
+                mRatesListAdapter?.mAmountToFx = binding.amountInputField.text.toString().toDouble()
+                binding.ratesListRecycler.post {
+                    // yes google, i know it's better to notify one item
+                    // instead of all of them, but i'm changing
+                    // more than one item at this time
+                    mRatesListAdapter?.notifyDataSetChanged()
+                }
             }
         } catch (e: Throwable) {
             e.printStackTrace()

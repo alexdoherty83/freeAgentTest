@@ -24,6 +24,7 @@
         android:inputType="numberDecimal"
         android:minWidth="80dp"
         android:textColor="@color/black"
+        android:imeOptions="actionGo"
         app:layout_constraintBaseline_toBaselineOf="@id/selected_currency_label"
         app:layout_constraintLeft_toRightOf="@id/selected_currency_label"
         app:layout_constraintRight_toRightOf="@id/rates_list_recycler"
