@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">FreeAgent Programming Test</string>
+
+    <string name="fx_default_currency">EUR</string>
+    <string-array name="fx_selectedCurrencies">
+        <item>USD</item>
+        <item>EUR</item>
+        <item>JPY</item>
+        <item>GBP</item>
+        <item>AUD</item>
+        <item>CAD</item>
+        <item>CHF</item>
+        <item>CNY</item>
+        <item>SEK</item>
+        <item>NZD</item>
+    </string-array>
 </resources>

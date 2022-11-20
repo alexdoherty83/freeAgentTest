@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/selected_currency_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:text="EUR"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -24,6 +23,7 @@
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:minWidth="80dp"
+        android:textColor="@color/black"
         app:layout_constraintBaseline_toBaselineOf="@id/selected_currency_label"
         app:layout_constraintLeft_toRightOf="@id/selected_currency_label"
         app:layout_constraintRight_toRightOf="@id/rates_list_recycler"
