@@ -54,7 +54,10 @@ open class FixerIoRetrofitApi(
                         .build()
                 else
                     request.newBuilder()
-                        .header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7)
+                        .header(
+                            "Cache-Control",
+                            "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7
+                        )
                         //.cacheControl(cacheControl)
                         .build()
                 chain.proceed(request)
@@ -66,9 +69,20 @@ open class FixerIoRetrofitApi(
         return Cache(context.cacheDir, (20 * 1024 * 1024).toLong())
     }
 
-    open suspend fun getLatestFxRates(defaultCurrency: String): FxModel? {
+    open fun getLatestFxRates(defaultCurrency: String, symbols: String): FxModel? {
         try {
-            val call = fixerIoService?.latestFxRates(API_KEY, defaultCurrency)
+            val call = fixerIoService?.latestFxRates(API_KEY, defaultCurrency, symbols)
+            val response = call?.execute()
+            return response?.body()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    open fun getRatesOverTime(startDate: String, endDate: String, defaultCurrency: String, symbols: String): FxModel? {
+        try {
+            val call = fixerIoService?.compareRatesOverTime(API_KEY, startDate, endDate, defaultCurrency, symbols)
             val response = call?.execute()
             return response?.body()
         } catch (e: Throwable) {
@@ -93,8 +107,22 @@ open class FixerIoRetrofitApi(
         @GET("/fixer/symbols")
         fun listAvailableSymbols(@Header("apikey") apikey: String): Call<SymbolsModel>
 
-        @GET("/fixer/latest?symbols=")
-        fun latestFxRates(@Header("apikey") apikey: String, @Query("base") defaultCurrency: String): Call<FxModel>
+        @GET("/fixer/latest")
+        fun latestFxRates(
+            @Header("apikey") apikey: String,
+            @Query("base") defaultCurrency: String,
+            @Query("symbols") symbols: String
+        ): Call<FxModel>
+
+        @GET("/fixer/timeseries")
+        fun compareRatesOverTime(
+            @Header("apikey") apikey: String,
+            @Query("start_date") startDate: String,
+            @Query("end_date") endDate: String,
+            @Query("base") defaultCurrency: String,
+            @Query("symbols") symbols: String
+        ): Call<FxModel>
+
 
     }
 

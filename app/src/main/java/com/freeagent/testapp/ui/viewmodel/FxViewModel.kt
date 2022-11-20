@@ -41,6 +41,7 @@ open class FxViewModel(
 
     fun getLatestFxRates(
         defaultCurrency: String,
+        symbols: String,
         success: ((model: FxModel?) -> Unit)? = null,
         failure: (() -> Unit)? = null
     ) {
@@ -48,7 +49,7 @@ open class FxViewModel(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    mFxModel = fxRepo?.getLatestFxRates(defaultCurrency)
+                    mFxModel = fxRepo?.getLatestFxRates(defaultCurrency, symbols)
                     when (mFxModel) {
                         is FxModel -> {
                             success?.invoke(mFxModel)

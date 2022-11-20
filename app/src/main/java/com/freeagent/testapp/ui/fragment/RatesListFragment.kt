@@ -3,14 +3,13 @@ package com.freeagent.testapp.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.KeyEvent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +43,7 @@ open class RatesListFragment : Fragment() {
             setupAdapter()
             setupSpinner()
             setupAmountInput()
+            setupCompareButton()
             setupRecyclerView()
             setupViewModel()
         } catch (e: Throwable) {
@@ -51,17 +51,45 @@ open class RatesListFragment : Fragment() {
         }
     }
 
-    protected open fun setupAmountInput() {
-        binding.amountInputField.setOnEditorActionListener { textView, actionId, p2 ->
-            try {// make sure this matches what was set for imeAction in the layout!
-                if (actionId == EditorInfo.IME_ACTION_GO) {
-                    if (!TextUtils.isEmpty(textView.text))
-                    obtainLatestRates()
+    @SuppressLint("NotifyDataSetChanged")
+    protected open fun setupCompareButton() {
+        try {
+            binding.toggleCompareButton.setOnClickListener {
+                try {
+                    mRatesListAdapter?.isCompare = !mRatesListAdapter?.isCompare!!
+
+                    binding.ratesListRecycler.post {
+                        try {
+                            mRatesListAdapter?.notifyDataSetChanged()
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                        }
+                    }
+
+                } catch (e: Throwable) {
+                    e.printStackTrace()
                 }
-            } catch (e: Throwable) {
-                e.printStackTrace()
             }
-            false
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+    protected open fun setupAmountInput() {
+        try {
+            binding.amountInputField.setOnEditorActionListener { textView, actionId, p2 ->
+                try {// make sure this matches what was set for imeAction in the layout!
+                    if (actionId == EditorInfo.IME_ACTION_GO) {
+                        if (!TextUtils.isEmpty(textView.text))
+                            obtainLatestRates()
+                    }
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+                false
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 
@@ -129,10 +157,19 @@ open class RatesListFragment : Fragment() {
     protected open fun obtainLatestRates() {
         try {
             defaultCurrency?.let { currency ->
-                fxViewModel.getLatestFxRates(defaultCurrency = currency, success = {
-                    obtainedFxRates(it)
-                }) {
-                    failedToObtainModel()
+
+                selectedCurrencies?.let { currencies ->
+
+                    val symbols = currencies.joinToString(separator = ",")
+
+                    fxViewModel.getLatestFxRates(
+                        defaultCurrency = currency,
+                        symbols = symbols,
+                        success = {
+                            obtainedFxRates(it)
+                        }) {
+                        failedToObtainModel()
+                    }
                 }
             }
         } catch (e: Throwable) {
@@ -149,7 +186,7 @@ open class RatesListFragment : Fragment() {
             mFxModel = model
             if (!TextUtils.isEmpty(binding.amountInputField.text)) {
                 mRatesListAdapter?.mList = model?.rates?.filter { victim ->
-                    selectedCurrencies?.contains(victim.key) == true && victim.key != defaultCurrency
+                    /*selectedCurrencies?.contains(victim.key) == true &&*/ victim.key != defaultCurrency
                 }
                 mRatesListAdapter?.mAmountToFx = binding.amountInputField.text.toString().toDouble()
                 binding.ratesListRecycler.post {
@@ -173,7 +210,25 @@ open class RatesListFragment : Fragment() {
     }
 
     protected open fun setupAdapter() {
-        mRatesListAdapter = RatesListAdapter()
+        try {
+            mRatesListAdapter = RatesListAdapter()
+            mRatesListAdapter?.mCheckChangedDelegate = {
+                try {
+                    val count = (mRatesListAdapter?.mCheckedItems?.size ?: 0)
+                    if (count > 1) {
+                        showComparison()
+                    }
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+    protected open fun showComparison() {
+
     }
 
     protected open fun setupRecyclerView() {
