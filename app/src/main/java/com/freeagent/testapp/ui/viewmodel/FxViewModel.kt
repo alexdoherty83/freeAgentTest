@@ -24,7 +24,7 @@ open class FxViewModel(
     fun getSymbols(
         success: ((model: SymbolsModel?) -> Unit)? = null,
         failure: (() -> Unit)? = null
-    ) {
+    ): Throwable? {
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
@@ -43,7 +43,9 @@ open class FxViewModel(
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
     fun getLatestFxRates(
@@ -51,7 +53,7 @@ open class FxViewModel(
         symbols: String,
         success: ((model: FxModel?) -> Unit)? = null,
         failure: (() -> Unit)? = null
-    ) {
+    ): Throwable? {
 
         try {
             viewModelScope.launch(Dispatchers.IO) {
@@ -72,7 +74,9 @@ open class FxViewModel(
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
 
     }
 
@@ -83,7 +87,7 @@ open class FxViewModel(
         endDate: String,
         success: ((model: ComparisonModel?) -> Unit)? = null,
         failure: (() -> Unit)? = null
-    ) {
+    ): Throwable? {
 
         try {
             viewModelScope.launch(Dispatchers.IO) {
@@ -104,7 +108,9 @@ open class FxViewModel(
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
 
     }
 

@@ -12,10 +12,14 @@ open class FreeAgentApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        mFixerApiClient =
-            FixerIoRetrofitApi(API_KEY = BuildConfig.API_KEY, BASE_URL = "https://api.apilayer.com")
-        mFixerApiClient?.setup(this)
-        mFxRepo = FxRepo(mFixerApiClient = mFixerApiClient)
+        try {
+            mFixerApiClient =
+                FixerIoRetrofitApi(API_KEY = BuildConfig.API_KEY, BASE_URL = "https://api.apilayer.com")
+            mFixerApiClient?.setup(this)
+            mFxRepo = FxRepo(mFixerApiClient = mFixerApiClient)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 
 

@@ -7,13 +7,11 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
 import com.freeagent.testapp.FreeAgentApplication
 import com.freeagent.testapp.R
-import com.freeagent.testapp.data.model.ComparisonModel
 import com.freeagent.testapp.databinding.ActivityMainBinding
 import com.freeagent.testapp.ui.fragment.ComparisonFragment
 import com.freeagent.testapp.ui.fragment.RatesListFragment
 import com.freeagent.testapp.ui.viewmodel.FxViewModel
 import com.freeagent.testapp.ui.viewmodel.FxViewModelFactory
-import com.google.gson.Gson
 
 open class MainActivity : AppCompatActivity() {
 
@@ -54,7 +52,7 @@ open class MainActivity : AppCompatActivity() {
         initialAmount: Double,
         currency: String,
         list: List<String>?
-    ) {
+    ): Throwable? {
         try {
             if (list != null) {
                 mComparisonFragment = ComparisonFragment(initialAmount, currency, list)
@@ -71,10 +69,12 @@ open class MainActivity : AppCompatActivity() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun setupToolbar(title: String, showHome: Boolean) {
+    protected open fun setupToolbar(title: String, showHome: Boolean): Throwable? {
 
         try {
             supportActionBar?.title = title
@@ -82,7 +82,9 @@ open class MainActivity : AppCompatActivity() {
             supportActionBar?.setDisplayHomeAsUpEnabled(showHome)
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
     override fun onBackPressed() {

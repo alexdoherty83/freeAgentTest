@@ -10,8 +10,6 @@ import com.freeagent.testapp.R
 import com.freeagent.testapp.data.model.ComparisonModel
 import com.freeagent.testapp.databinding.FragmentComparisonBinding
 import com.freeagent.testapp.ui.adapter.ComparisonListAdapter
-import com.freeagent.testapp.ui.widget.VerticalSpaceItemDecoration
-import com.freeagent.testapp.utils.HelpfulUtils
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,19 +44,23 @@ open class ComparisonFragment(
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+
         }
+
     }
 
     @SuppressLint("SetTextI18n")
-    protected open fun setupAmount() {
+    protected open fun setupAmount(): Throwable? {
         try {
             binding.comparisonAmount.text = "$mAmount $mCurrency"
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun setupAdapter() {
+    protected open fun setupAdapter(): Throwable? {
 
         try {
             mAdapter = ComparisonListAdapter()
@@ -66,11 +68,13 @@ open class ComparisonFragment(
             mAdapter?.mRowColour = ResourcesCompat.getColor(resources, R.color.comparison_row, null)
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
 
     }
 
-    protected open fun setupRecyclerView() {
+    protected open fun setupRecyclerView(): Throwable? {
 
         try {
             binding.comparisonRecyclerView.apply {
@@ -79,11 +83,13 @@ open class ComparisonFragment(
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
 
     }
 
-    protected open fun setupHeader() {
+    protected open fun setupHeader(): Throwable? {
 
         try {
             if (mSelectedCurrencies.size > 1) {
@@ -92,11 +98,13 @@ open class ComparisonFragment(
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
 
     }
 
-    protected open fun setupComparison() {
+    protected open fun setupComparison(): Throwable? {
         try {
             showLoading()
             val calendar = Calendar.getInstance()
@@ -118,11 +126,13 @@ open class ComparisonFragment(
             )
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    protected open fun obtainedComparison(comparisonModel: ComparisonModel?) {
+    protected open fun obtainedComparison(comparisonModel: ComparisonModel?): Throwable? {
         try {
             hideLoading()
             mComparisonModel = comparisonModel
@@ -138,25 +148,31 @@ open class ComparisonFragment(
 
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    override fun showLoading() {
+    override fun showLoading(): Throwable? {
 
         try {
-            mSnackbar = Snackbar.make(binding.root, R.string.loading_comparison, Snackbar.LENGTH_INDEFINITE)
+            mSnackbar =
+                Snackbar.make(binding.root, R.string.loading_comparison, Snackbar.LENGTH_INDEFINITE)
             mSnackbar?.show()
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
-
+        return null
     }
 
-    override fun hideLoading() {
+    override fun hideLoading(): Throwable? {
         try {
             mSnackbar?.dismiss()
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 }

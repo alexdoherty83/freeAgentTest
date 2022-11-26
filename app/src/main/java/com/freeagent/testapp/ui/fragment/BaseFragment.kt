@@ -32,8 +32,8 @@ abstract class BaseFragment : Fragment() {
         super.onSaveInstanceState(outState)
     }
 
-    abstract fun showLoading()
+    abstract fun showLoading(): Throwable?
 
-    abstract fun hideLoading()
+    abstract fun hideLoading(): Throwable?
 
 }

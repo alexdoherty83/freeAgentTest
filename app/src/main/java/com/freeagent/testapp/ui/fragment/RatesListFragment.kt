@@ -51,7 +51,7 @@ open class RatesListFragment : BaseFragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    protected open fun setupCompareButton() {
+    protected open fun setupCompareButton(): Throwable? {
         try {
             binding.toggleCompareButton.setOnClickListener {
                 try {
@@ -71,10 +71,12 @@ open class RatesListFragment : BaseFragment() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun setupAmountInput() {
+    protected open fun setupAmountInput(): Throwable? {
         try {
             binding.amountInputField.setOnEditorActionListener { textView, actionId, _ ->
                 try {// make sure this matches what was set for imeAction in the layout!
@@ -91,10 +93,12 @@ open class RatesListFragment : BaseFragment() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun setupSpinner() {
+    protected open fun setupSpinner(): Throwable? {
         try {
             selectedCurrencies?.let {
                 val sortedList = it.sortedArray()
@@ -132,19 +136,23 @@ open class RatesListFragment : BaseFragment() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun loadDefaults() {
+    protected open fun loadDefaults(): Throwable? {
         try {
             defaultCurrency = resources.getString(R.string.fx_default_currency)
             selectedCurrencies = resources.getStringArray(R.array.fx_selectedCurrencies)
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun setupViewModel() {
+    protected open fun setupViewModel(): Throwable? {
 
         try {
             //showLoading()
@@ -152,10 +160,12 @@ open class RatesListFragment : BaseFragment() {
 
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun obtainLatestRates() {
+    protected open fun obtainLatestRates(): Throwable? {
         try {
             defaultCurrency?.let { currency ->
 
@@ -176,11 +186,13 @@ open class RatesListFragment : BaseFragment() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    protected open fun obtainedFxRates(model: FxModel?) {
+    protected open fun obtainedFxRates(model: FxModel?): Throwable? {
         try {
 
             hideLoading()
@@ -200,18 +212,22 @@ open class RatesListFragment : BaseFragment() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun failedToObtainModel() {
+    protected open fun failedToObtainModel(): Throwable? {
         try {
             hideLoading()
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun setupAdapter() {
+    protected open fun setupAdapter(): Throwable? {
         try {
             mRatesListAdapter = RatesListAdapter()
             mRatesListAdapter?.mCheckChangedDelegate = {
@@ -226,10 +242,12 @@ open class RatesListFragment : BaseFragment() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun showComparison() {
+    protected open fun showComparison(): Throwable? {
         try {
             if (mComparisonDelegate != null) {
                 mRatesListAdapter?.mCheckedItems?.let { items ->
@@ -243,10 +261,12 @@ open class RatesListFragment : BaseFragment() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    protected open fun setupRecyclerView() {
+    protected open fun setupRecyclerView(): Throwable? {
         try {
             binding.ratesListRecycler.apply {
                 layoutManager = makeLayoutManager()
@@ -254,25 +274,31 @@ open class RatesListFragment : BaseFragment() {
             }
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 
-    override fun showLoading() {
+    override fun showLoading(): Throwable? {
 
         try {
             mSnackbar = Snackbar.make(binding.root, R.string.loading_fx, Snackbar.LENGTH_INDEFINITE)
             mSnackbar?.show()
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
 
     }
 
-    override fun hideLoading() {
+    override fun hideLoading(): Throwable? {
         try {
             mSnackbar?.dismiss()
         } catch (e: Throwable) {
             e.printStackTrace()
+            return e
         }
+        return null
     }
 }
