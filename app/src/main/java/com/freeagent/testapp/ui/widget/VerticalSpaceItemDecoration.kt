@@ -3,7 +3,8 @@ package com.freeagent.testapp.ui.widget
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
 
-class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) : RecyclerView.ItemDecoration() {
+class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) :
+    RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, itemPosition: Int, parent: RecyclerView) {
 

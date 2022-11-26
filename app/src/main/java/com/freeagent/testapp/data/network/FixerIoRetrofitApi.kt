@@ -1,11 +1,11 @@
 package com.freeagent.testapp.data.network
 
 import android.content.Context
+import com.freeagent.testapp.data.model.ComparisonModel
 import com.freeagent.testapp.data.model.FxModel
 import com.freeagent.testapp.data.model.SymbolsModel
 import com.freeagent.testapp.utils.HelpfulUtils
 import okhttp3.Cache
-import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -13,7 +13,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
-import java.util.concurrent.TimeUnit
 
 
 open class FixerIoRetrofitApi(
@@ -42,15 +41,9 @@ open class FixerIoRetrofitApi(
             .addInterceptor { chain ->
                 var request = chain.request()
 
-                val cacheControl = CacheControl.Builder()
-                    .onlyIfCached()
-                    .maxStale(1, TimeUnit.DAYS)
-                    .build()
-
                 request = if (HelpfulUtils.hasNetwork(context) == true)
                     request.newBuilder()
                         .header("Cache-Control", "public, max-age=" + 5)
-                        //.cacheControl(cacheControl)
                         .build()
                 else
                     request.newBuilder()
@@ -58,9 +51,9 @@ open class FixerIoRetrofitApi(
                             "Cache-Control",
                             "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7
                         )
-                        //.cacheControl(cacheControl)
                         .build()
                 chain.proceed(request)
+
             }
             .build()
     }
@@ -80,9 +73,20 @@ open class FixerIoRetrofitApi(
         return null
     }
 
-    open fun getRatesOverTime(startDate: String, endDate: String, defaultCurrency: String, symbols: String): FxModel? {
+    open fun getRatesOverTime(
+        startDate: String,
+        endDate: String,
+        defaultCurrency: String,
+        symbols: String
+    ): ComparisonModel? {
         try {
-            val call = fixerIoService?.compareRatesOverTime(API_KEY, startDate, endDate, defaultCurrency, symbols)
+            val call = fixerIoService?.compareRatesOverTime(
+                API_KEY,
+                startDate,
+                endDate,
+                defaultCurrency,
+                symbols
+            )
             val response = call?.execute()
             return response?.body()
         } catch (e: Throwable) {
@@ -121,7 +125,7 @@ open class FixerIoRetrofitApi(
             @Query("end_date") endDate: String,
             @Query("base") defaultCurrency: String,
             @Query("symbols") symbols: String
-        ): Call<FxModel>
+        ): Call<ComparisonModel>
 
 
     }

@@ -3,30 +3,24 @@ package com.freeagent.testapp.ui.fragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.freeagent.testapp.R
 import com.freeagent.testapp.data.model.FxModel
 import com.freeagent.testapp.databinding.FragmentRatesListBinding
 import com.freeagent.testapp.ui.adapter.RatesListAdapter
-import com.freeagent.testapp.ui.viewmodel.FxViewModel
 import com.freeagent.testapp.ui.widget.VerticalSpaceItemDecoration
 
-open class RatesListFragment : Fragment() {
+open class RatesListFragment : BaseFragment() {
 
-    protected open var mFxModel: FxModel? = null
+    open var mComparisonDelegate: ((Double, String, List<String>?) -> Unit)? = null
+
     protected open val binding by lazy { FragmentRatesListBinding.inflate(layoutInflater) }
     protected open var mRatesListAdapter: RatesListAdapter? = null
-    protected open val fxViewModel by activityViewModels<FxViewModel>()
     protected open var defaultCurrency: String? = null
     protected open var selectedCurrencies: Array<String>? = null
 
@@ -77,7 +71,7 @@ open class RatesListFragment : Fragment() {
 
     protected open fun setupAmountInput() {
         try {
-            binding.amountInputField.setOnEditorActionListener { textView, actionId, p2 ->
+            binding.amountInputField.setOnEditorActionListener { textView, actionId, _ ->
                 try {// make sure this matches what was set for imeAction in the layout!
                     if (actionId == EditorInfo.IME_ACTION_GO) {
                         if (!TextUtils.isEmpty(textView.text))
@@ -228,7 +222,20 @@ open class RatesListFragment : Fragment() {
     }
 
     protected open fun showComparison() {
-
+        try {
+            if (mComparisonDelegate != null) {
+                mRatesListAdapter?.mCheckedItems?.let { items ->
+                    defaultCurrency?.let { currency ->
+                        mComparisonDelegate?.invoke(
+                            binding.amountInputField.text.toString().toDouble(),
+                            currency, items
+                        )
+                    }
+                }
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 
     protected open fun setupRecyclerView() {
@@ -249,16 +256,11 @@ open class RatesListFragment : Fragment() {
         }
     }
 
-    protected open fun makeLayoutManager(): RecyclerView.LayoutManager? {
-        // this would be a good time to think about tablet layouts...
-        return LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-    }
-
-    protected open fun showLoading() {
+    override fun showLoading() {
 
     }
 
-    protected open fun hideLoading() {
+    override fun hideLoading() {
 
     }
 }
