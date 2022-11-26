@@ -33,13 +33,15 @@ open class RatesListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         try {
-            loadDefaults()
-            setupAdapter()
-            setupSpinner()
-            setupAmountInput()
-            setupCompareButton()
-            setupRecyclerView()
-            setupViewModel()
+            if (savedInstanceState == null) {
+                loadDefaults()
+                setupAdapter()
+                setupSpinner()
+                setupAmountInput()
+                setupCompareButton()
+                setupRecyclerView()
+                setupViewModel()
+            }
         } catch (e: Throwable) {
             e.printStackTrace()
         }

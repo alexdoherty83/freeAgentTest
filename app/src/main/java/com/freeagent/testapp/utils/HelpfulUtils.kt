@@ -16,6 +16,7 @@ class HelpfulUtils {
                 isConnected = true
             return isConnected
         }
+
     }
 
 }

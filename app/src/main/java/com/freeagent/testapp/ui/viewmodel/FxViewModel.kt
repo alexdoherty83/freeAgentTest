@@ -56,7 +56,7 @@ open class FxViewModel(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    mFxModel = fxRepo?.getLatestFxRates(defaultCurrency, symbols)
+                    mFxModel = fxRepo?.loadDummyFxModel()  //fxRepo?.getLatestFxRates(defaultCurrency, symbols)
                     when (mFxModel) {
                         is FxModel -> {
                             success?.invoke(mFxModel)
@@ -87,8 +87,8 @@ open class FxViewModel(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 try {
-                    val comparisonModel =
-                        fxRepo?.getRatesOverTime(startDate, endDate, defaultCurrency, symbols)
+                    val comparisonModel = fxRepo?.loadDummyComparisonModel()
+                        //fxRepo?.getRatesOverTime(startDate = startDate, endDate = endDate, defaultCurrency, symbols)
                     when (comparisonModel) {
                         is ComparisonModel -> {
                             success?.invoke(comparisonModel)

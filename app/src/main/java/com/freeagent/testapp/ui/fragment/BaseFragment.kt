@@ -1,5 +1,6 @@
 package com.freeagent.testapp.ui.fragment
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,9 +13,20 @@ abstract class BaseFragment : Fragment() {
     protected open var mFxModel: FxModel? = null
     protected open val fxViewModel by activityViewModels<FxViewModel>()
 
+    companion object {
+
+        const val INITED = "inited"
+
+    }
+
     protected open fun makeLayoutManager(): RecyclerView.LayoutManager? {
         // this would be a good time to think about tablet layouts...
         return LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(INITED, true)
+        super.onSaveInstanceState(outState)
     }
 
     abstract fun showLoading()

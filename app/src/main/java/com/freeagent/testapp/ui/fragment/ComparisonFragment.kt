@@ -5,8 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.freeagent.testapp.R
 import com.freeagent.testapp.data.model.ComparisonModel
 import com.freeagent.testapp.databinding.FragmentComparisonBinding
+import com.freeagent.testapp.ui.adapter.ComparisonListAdapter
+import com.freeagent.testapp.ui.widget.VerticalSpaceItemDecoration
+import com.freeagent.testapp.utils.HelpfulUtils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -19,7 +23,8 @@ open class ComparisonFragment(
     protected open var mComparisonModel: ComparisonModel? = null
     protected open val binding by lazy { FragmentComparisonBinding.inflate(layoutInflater) }
 
-    protected open val dateFormatter = SimpleDateFormat("yyyy-mm-dd", Locale.getDefault())
+    protected open val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    protected open var mAdapter: ComparisonListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,11 +35,55 @@ open class ComparisonFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         try {
-            setupAmount()
-            setupComparison()
+            if (savedInstanceState == null) {
+                setupAmount()
+                setupAdapter()
+                setupRecyclerView()
+                setupComparison()
+            }
         } catch (e: Throwable) {
             e.printStackTrace()
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    protected open fun setupAmount() {
+        try {
+            binding.comparisonAmount.text = "$mAmount $mCurrency"
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+    protected open fun setupAdapter() {
+
+        try {
+            mAdapter = ComparisonListAdapter()
+            mAdapter?.mAmountToFx = mAmount
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
+    }
+
+    protected open fun setupRecyclerView() {
+
+        try {
+            binding.comparisonRecyclerView.apply {
+                layoutManager = makeLayoutManager()
+                adapter = mAdapter
+                addItemDecoration(
+                    VerticalSpaceItemDecoration(
+                        resources.getDimensionPixelSize(
+                            R.dimen.padding
+                        )
+                    )
+                )
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
     }
 
     protected open fun setupComparison() {
@@ -62,19 +111,20 @@ open class ComparisonFragment(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     protected open fun obtainedComparison(comparisonModel: ComparisonModel?) {
         try {
             mComparisonModel = comparisonModel
+            mAdapter?.mList = mComparisonModel?.rates
+            binding.comparisonRecyclerView.post {
 
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-    }
+                try {
+                    mAdapter?.notifyDataSetChanged()
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
 
-    @SuppressLint("SetTextI18n")
-    protected open fun setupAmount() {
-        try {
-            binding.comparisonAmount.text = "$mAmount $mCurrency"
         } catch (e: Throwable) {
             e.printStackTrace()
         }

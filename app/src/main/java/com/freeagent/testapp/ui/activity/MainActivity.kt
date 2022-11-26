@@ -1,6 +1,7 @@
 package com.freeagent.testapp.ui.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
@@ -59,6 +60,8 @@ open class MainActivity : AppCompatActivity() {
                 mComparisonFragment = ComparisonFragment(initialAmount, currency, list)
                 mComparisonFragment?.let {
 
+                    setupToolbar("", true)
+
                     supportFragmentManager.commit {
                         setReorderingAllowed(true)
                         addToBackStack(ComparisonFragment::class.java.simpleName)
@@ -69,5 +72,30 @@ open class MainActivity : AppCompatActivity() {
         } catch (e: Throwable) {
             e.printStackTrace()
         }
+    }
+
+    protected open fun setupToolbar(title: String, showHome: Boolean) {
+
+        try {
+            supportActionBar?.title = title
+            supportActionBar?.setDisplayShowHomeEnabled(showHome)
+            supportActionBar?.setDisplayHomeAsUpEnabled(showHome)
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        setupToolbar(getString(R.string.app_name), false)
+    }
+
+    // android... why?  Why can't you comprehend the action
+    // for a home button without help?
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
