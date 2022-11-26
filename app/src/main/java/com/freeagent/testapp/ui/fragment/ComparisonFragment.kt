@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import com.freeagent.testapp.R
 import com.freeagent.testapp.data.model.ComparisonModel
 import com.freeagent.testapp.databinding.FragmentComparisonBinding
@@ -39,6 +40,7 @@ open class ComparisonFragment(
                 setupAmount()
                 setupAdapter()
                 setupRecyclerView()
+                setupHeader()
                 setupComparison()
             }
         } catch (e: Throwable) {
@@ -60,6 +62,7 @@ open class ComparisonFragment(
         try {
             mAdapter = ComparisonListAdapter()
             mAdapter?.mAmountToFx = mAmount
+            mAdapter?.mRowColour = ResourcesCompat.getColor(resources, R.color.comparison_row, null)
         } catch (e: Throwable) {
             e.printStackTrace()
         }
@@ -72,13 +75,19 @@ open class ComparisonFragment(
             binding.comparisonRecyclerView.apply {
                 layoutManager = makeLayoutManager()
                 adapter = mAdapter
-                addItemDecoration(
-                    VerticalSpaceItemDecoration(
-                        resources.getDimensionPixelSize(
-                            R.dimen.padding
-                        )
-                    )
-                )
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
+    }
+
+    protected open fun setupHeader() {
+
+        try {
+            if (mSelectedCurrencies.size > 1) {
+                binding.comparisonCurrenyOneFilter.text = mSelectedCurrencies[0]
+                binding.comparisonCurrenyTwoFilter.text = mSelectedCurrencies[1]
             }
         } catch (e: Throwable) {
             e.printStackTrace()

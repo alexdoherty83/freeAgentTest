@@ -17,4 +17,6 @@
 
     <string name="fx_toggle_button">Compare</string>
     <string name="back">Back</string>
+
+    <string name="comparison_date">Date</string>
 </resources>

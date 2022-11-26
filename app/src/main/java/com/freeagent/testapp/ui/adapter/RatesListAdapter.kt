@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.freeagent.testapp.R
 import com.freeagent.testapp.databinding.ItemViewCurrencyBinding
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 open class RatesListAdapter : RecyclerView.Adapter<RatesListAdapter.FxViewHolder>() {
 
@@ -16,6 +18,12 @@ open class RatesListAdapter : RecyclerView.Adapter<RatesListAdapter.FxViewHolder
     open var mCheckChangedDelegate: (() -> Unit)? = null
 
     open var mCheckedItems = ArrayList<String>()
+
+    val mDecimalFormat = DecimalFormat("#.##")
+
+    init {
+        mDecimalFormat.roundingMode = RoundingMode.CEILING
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FxViewHolder {
 
@@ -53,7 +61,8 @@ open class RatesListAdapter : RecyclerView.Adapter<RatesListAdapter.FxViewHolder
                 keyValue,
                 (mAmountToFx ?: 0).toDouble(),
                 isCompare,
-                isAlreadyChecked
+                isAlreadyChecked,
+                mDecimalFormat
             )
             /*if (position % 2 == 0) {
                 holder.itemView.setBackgroundColor(Color.WHITE)
@@ -78,12 +87,13 @@ open class RatesListAdapter : RecyclerView.Adapter<RatesListAdapter.FxViewHolder
             keyValue: Map.Entry<String, String>?,
             amountToFx: Double,
             isCompare: Boolean,
-            isAlreadyChecked: Boolean
+            isAlreadyChecked: Boolean,
+            decimalFormat: DecimalFormat
         ) {
             try {
                 binding.currencyNameLabel.text = keyValue?.key
                 binding.currencyRateLabel.text =
-                    ((keyValue?.value?.toDouble() ?: 0).toDouble() * amountToFx).toString()
+                    decimalFormat.format((keyValue?.value?.toDouble() ?: 0).toDouble() * amountToFx).toString()
                 if (isCompare) {
                     binding.currencyCompareToggle.visibility = View.VISIBLE
                     binding.currencyCompareToggle.setTag(R.id.comparePosition, keyValue?.key)

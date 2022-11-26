@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.freeagent.testapp.databinding.ItemViewComparisonBinding
 import com.google.gson.internal.LinkedTreeMap
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.*
 
 open class ComparisonListAdapter :
@@ -14,6 +16,14 @@ open class ComparisonListAdapter :
     open var mAmountToFx: Double? = null
 
     open var mList: TreeMap<String, LinkedTreeMap<String, String>>? = null
+
+    open var mRowColour: Int = 0
+
+    val mDecimalFormat = DecimalFormat("#.##")
+
+    init {
+        mDecimalFormat.roundingMode = RoundingMode.CEILING
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -38,13 +48,14 @@ open class ComparisonListAdapter :
             val item = mList?.entries?.elementAt(position)
             holder.bindViewHolder(
                 item,
-                (mAmountToFx ?: 0).toDouble())
+                (mAmountToFx ?: 0).toDouble(),
+                mDecimalFormat
+            )
 
             if (position % 2 == 0) {
                 holder.itemView.setBackgroundColor(Color.WHITE)
-            }
-            else {
-                holder.itemView.setBackgroundColor(Color.LTGRAY)
+            } else {
+                holder.itemView.setBackgroundColor(mRowColour)
             }
 
         } catch (e: Throwable) {
@@ -62,13 +73,22 @@ open class ComparisonListAdapter :
 
         open fun bindViewHolder(
             item: MutableMap.MutableEntry<String, LinkedTreeMap<String, String>>?,
-            toDouble: Double
+            toDouble: Double,
+            mDecimalFormat: DecimalFormat
         ) {
 
             try {
                 binding.comparisonDate.text = item?.key
-                binding.comparisonValueOne.text = ((item?.value?.entries?.elementAt(0)?.value?.toDouble() ?: 0).toDouble() * toDouble).toString()
-                binding.comparisonValueTwo.text = ((item?.value?.entries?.elementAt(1)?.value?.toDouble() ?: 0).toDouble() * toDouble).toString()
+                binding.comparisonValueOne.text =
+                    mDecimalFormat.format(
+                        (item?.value?.entries?.elementAt(0)?.value?.toDouble()
+                            ?: 0).toDouble() * toDouble
+                    ).toString()
+                binding.comparisonValueTwo.text =
+                    mDecimalFormat.format(
+                        (item?.value?.entries?.elementAt(1)?.value?.toDouble()
+                            ?: 0).toDouble() * toDouble
+                    ).toString()
             } catch (e: Throwable) {
                 e.printStackTrace()
             }

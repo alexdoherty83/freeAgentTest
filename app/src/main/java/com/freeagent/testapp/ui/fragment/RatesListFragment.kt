@@ -245,13 +245,6 @@ open class RatesListFragment : BaseFragment() {
             binding.ratesListRecycler.apply {
                 layoutManager = makeLayoutManager()
                 adapter = mRatesListAdapter
-                addItemDecoration(
-                    VerticalSpaceItemDecoration(
-                        resources.getDimensionPixelSize(
-                            R.dimen.padding
-                        )
-                    )
-                )
             }
         } catch (e: Throwable) {
             e.printStackTrace()
