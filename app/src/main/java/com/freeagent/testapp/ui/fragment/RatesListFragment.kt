@@ -14,12 +14,15 @@ import com.freeagent.testapp.data.model.FxModel
 import com.freeagent.testapp.databinding.FragmentRatesListBinding
 import com.freeagent.testapp.ui.adapter.RatesListAdapter
 import com.freeagent.testapp.ui.widget.VerticalSpaceItemDecoration
+import com.freeagent.testapp.utils.dismissKeyboard
+import com.google.android.material.snackbar.Snackbar
 
 open class RatesListFragment : BaseFragment() {
 
     open var mComparisonDelegate: ((Double, String, List<String>?) -> Unit)? = null
 
     protected open val binding by lazy { FragmentRatesListBinding.inflate(layoutInflater) }
+
     protected open var mRatesListAdapter: RatesListAdapter? = null
     protected open var defaultCurrency: String? = null
     protected open var selectedCurrencies: Array<String>? = null
@@ -76,8 +79,10 @@ open class RatesListFragment : BaseFragment() {
             binding.amountInputField.setOnEditorActionListener { textView, actionId, _ ->
                 try {// make sure this matches what was set for imeAction in the layout!
                     if (actionId == EditorInfo.IME_ACTION_GO) {
-                        if (!TextUtils.isEmpty(textView.text))
+                        if (!TextUtils.isEmpty(textView.text)) {
                             obtainLatestRates()
+                            activity?.dismissKeyboard()
+                        }
                     }
                 } catch (e: Throwable) {
                     e.printStackTrace()
@@ -156,6 +161,7 @@ open class RatesListFragment : BaseFragment() {
 
                 selectedCurrencies?.let { currencies ->
 
+                    showLoading()
                     val symbols = currencies.joinToString(separator = ",")
 
                     fxViewModel.getLatestFxRates(
@@ -253,9 +259,20 @@ open class RatesListFragment : BaseFragment() {
 
     override fun showLoading() {
 
+        try {
+            mSnackbar = Snackbar.make(binding.root, R.string.loading_fx, Snackbar.LENGTH_INDEFINITE)
+            mSnackbar?.show()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
     }
 
     override fun hideLoading() {
-
+        try {
+            mSnackbar?.dismiss()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 }

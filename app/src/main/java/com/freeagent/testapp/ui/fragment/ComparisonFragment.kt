@@ -12,6 +12,7 @@ import com.freeagent.testapp.databinding.FragmentComparisonBinding
 import com.freeagent.testapp.ui.adapter.ComparisonListAdapter
 import com.freeagent.testapp.ui.widget.VerticalSpaceItemDecoration
 import com.freeagent.testapp.utils.HelpfulUtils
+import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -123,6 +124,7 @@ open class ComparisonFragment(
     @SuppressLint("NotifyDataSetChanged")
     protected open fun obtainedComparison(comparisonModel: ComparisonModel?) {
         try {
+            hideLoading()
             mComparisonModel = comparisonModel
             mAdapter?.mList = mComparisonModel?.rates
             binding.comparisonRecyclerView.post {
@@ -141,9 +143,20 @@ open class ComparisonFragment(
 
     override fun showLoading() {
 
+        try {
+            mSnackbar = Snackbar.make(binding.root, R.string.loading_comparison, Snackbar.LENGTH_INDEFINITE)
+            mSnackbar?.show()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
+
     }
 
     override fun hideLoading() {
-
+        try {
+            mSnackbar?.dismiss()
+        } catch (e: Throwable) {
+            e.printStackTrace()
+        }
     }
 }

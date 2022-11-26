@@ -7,11 +7,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.freeagent.testapp.data.model.FxModel
 import com.freeagent.testapp.ui.viewmodel.FxViewModel
+import com.google.android.material.snackbar.Snackbar
 
 abstract class BaseFragment : Fragment() {
 
     protected open var mFxModel: FxModel? = null
     protected open val fxViewModel by activityViewModels<FxViewModel>()
+
+    protected open var mSnackbar: Snackbar? = null
 
     companion object {
 

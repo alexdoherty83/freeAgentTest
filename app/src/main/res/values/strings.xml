@@ -19,4 +19,8 @@
     <string name="back">Back</string>
 
     <string name="comparison_date">Date</string>
+
+    <string name="loading_fx">Loading FX…</string>
+    <string name="loading_comparison">Loading Dates…</string>
+
 </resources>
