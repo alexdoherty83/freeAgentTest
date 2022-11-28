@@ -5,13 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/toggleCompareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fx_toggle_button"
+        android:layout_marginTop="@dimen/quadPadding"
+        android:layout_marginStart="@dimen/doublePadding"
+        app:layout_constraintEnd_toStartOf="@id/selected_currency_label"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintBaseline_toBaselineOf="@id/selected_currency_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/selected_currency_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:text="EUR"
+        android:layout_marginTop="@dimen/quadPadding"
+        android:layout_marginEnd="@dimen/doublePadding"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -22,8 +34,10 @@
         android:id="@+id/amount_input_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:imeOptions="actionGo"
         android:inputType="numberDecimal"
         android:minWidth="80dp"
+        android:textColor="@color/black"
         app:layout_constraintBaseline_toBaselineOf="@id/selected_currency_label"
         app:layout_constraintLeft_toRightOf="@id/selected_currency_label"
         app:layout_constraintRight_toRightOf="@id/rates_list_recycler"
@@ -33,7 +47,7 @@
         android:id="@+id/rates_list_recycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/doublePadding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

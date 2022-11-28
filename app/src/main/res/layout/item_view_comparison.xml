@@ -5,39 +5,46 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:id="@+id/currency_compareToggle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
-        android:id="@+id/currency_name_label"
-        android:layout_width="wrap_content"
+        android:id="@+id/comparison_date"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/padding"
         android:layout_marginTop="@dimen/padding"
         android:layout_marginBottom="@dimen/padding"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/currency_compareToggle"
+        app:layout_constraintEnd_toStartOf="@id/comparison_valueOne"
+        app:layout_constraintHorizontal_weight="67"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="USD" />
+        tools:text="10/07/2018" />
 
     <TextView
-        android:id="@+id/currency_rate_label"
-        android:layout_width="wrap_content"
+        android:id="@+id/comparison_valueOne"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding"
         android:layout_marginBottom="@dimen/padding"
-        android:paddingEnd="@dimen/padding"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/comparison_valueTwo"
+        app:layout_constraintHorizontal_weight="33"
+        app:layout_constraintStart_toEndOf="@id/comparison_date"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="106.82" />
+
+    <TextView
+        android:id="@+id/comparison_valueTwo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding"
+        android:layout_marginBottom="@dimen/padding"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="33"
+        app:layout_constraintStart_toEndOf="@id/comparison_valueOne"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="106.82" />
 
